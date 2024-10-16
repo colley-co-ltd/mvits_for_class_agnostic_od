@@ -58,7 +58,7 @@ def _make_mdef_detr(checkpoints_path):
     model = MDefDETR(backbone=backbone, transformer=transformer, num_classes=255, num_queries=300,
                      num_feature_levels=4)
     checkpoint = torch.load(checkpoints_path, map_location="cpu")
-    model.load_state_dict(checkpoint["model"])
+    model.load_state_dict(checkpoint["model"], strict=False)
 
     return model
 
@@ -70,6 +70,6 @@ def _make_mdef_detr_minus_language(checkpoints_path):
     model = MDefDETRMinusLanguage(backbone=backbone, transformer=transformer, num_classes=1, num_queries=300,
                                   num_feature_levels=4)
     checkpoint = torch.load(checkpoints_path, map_location="cpu")
-    model.load_state_dict(checkpoint["model"])
+    model.load_state_dict(checkpoint["model"], strict=False)
 
     return model

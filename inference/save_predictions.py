@@ -1,3 +1,4 @@
+import numpy as np
 import os
 import pickle
 
@@ -41,3 +42,24 @@ class SavePKLFormat(SavePredictions):
         img_to_boxes = {**img_to_boxes, **self.predictions}
         with open(save_path, "wb") as f:
             pickle.dump(img_to_boxes, f)
+
+
+class SaveNPZFormat(SavePredictions):
+    def __init__(self):
+        SavePredictions.__init__(self)
+        self.counter = 0
+
+    def update(self, predictions):
+        self.predictions = predictions
+
+    def save(self, save_path):
+        reformed_predictions = {
+            k : np.concatenate([
+                np.array(v[0]),
+                np.array(v[1])[..., np.newaxis],
+            ], axis=1) for k, v in self.predictions.items()
+        }
+
+        with open(f"{save_path}_{self.counter}.npz", "wb") as f:
+            np.savez_compressed(f, **reformed_predictions)
+        self.counter += 1
